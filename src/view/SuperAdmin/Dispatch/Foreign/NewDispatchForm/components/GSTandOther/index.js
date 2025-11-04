@@ -3,6 +3,7 @@ import BillTypeInformationField from './BillTypeInformationField'
 import IGSTInformationField from './IGSTInformationField'
 import CGSTInformationField from './CGSTInformationField'
 import SGSTInformationField from './SGSTInformationField'
+import LUTNoInformationField from './LUTNoInformationField'
 import EWayBillNoInformationField from './EWayBillNoInformationField'
 import RemarkInformationField from './RemarkInformationField'
 
@@ -38,6 +39,12 @@ const GSTandOtherInformationFields = (props) => {
                     </>
                 ) : null}
             </div>
+            {values?.bill_type === 'NON GST' && (
+                <LUTNoInformationField
+                    errors={errors?.lut_no}
+                    touched={touched?.lut_no}
+                />
+            )}
             <EWayBillNoInformationField
                 errors={errors?.e_way_bill_no}
                 touched={touched?.e_way_bill_no}

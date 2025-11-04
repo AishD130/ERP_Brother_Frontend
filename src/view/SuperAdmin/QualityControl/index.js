@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState, useRef } from "react";
 import { Loading, StickyFooter } from "../../../components/shared";
 import { Form, Formik } from "formik";
 import { Button, Card } from "antd";
@@ -12,6 +12,8 @@ import * as Yup from "yup";
 import { getAllCustomers } from "./store/dataSlice";
 import QualityItemDialog from "./components/QualityItemDialog";
 import ItemTable from "./components/ItemTable";
+import PrintReportDialog from "./components/PrintReportDialog";
+import ReportViewDialog from "./components/ReportViewDialog";
 
 injectReducer("quality", qualityReducer);
 
@@ -23,7 +25,12 @@ const validationSchema = Yup.object().shape({
 const QualityControl = () => {
   const dispatch = useDispatch();
   const [qualityDialogOpen, setQualityDialogOpen] = useState(false);
+  const [printDialogOpen, setPrintDialogOpen] = useState(false);
+  const [reportViewOpen, setReportViewOpen] = useState(false);
+  const [reportType, setReportType] = useState(null);
   const [qualityItems, setQualityItems] = useState([]);
+  const [reportData, setReportData] = useState(null);
+  const formValuesRef = useRef(null);
 
   console.log("qualityItems", qualityItems);
 
@@ -159,6 +166,24 @@ const QualityControl = () => {
     setQualityItems((prev) => [...prev, mappedItem]);
   };
 
+  const handleOpenPrintDialog = () => {
+    // Capture current form values
+    setReportData({ ...formValuesRef.current, qualityItems });
+    setPrintDialogOpen(true);
+  };
+
+  const handleDimensionReport = () => {
+    setReportType("dimension");
+    setPrintDialogOpen(false);
+    setReportViewOpen(true);
+  };
+
+  const handleVisualReport = () => {
+    setReportType("visual");
+    setPrintDialogOpen(false);
+    setReportViewOpen(true);
+  };
+
   // const handleAddItem = (newItem) => {
   //   console.log("New Item:", newItem);
   //   setQualityItems((prevItems) => {
@@ -203,6 +228,9 @@ const QualityControl = () => {
           }}
         >
           {({ values, touched, errors, setFieldValue, isSubmitting }) => {
+            // Store form values in ref for reports
+            formValuesRef.current = values;
+            
             console.log("values");
             return (
               <Form key="">
@@ -215,6 +243,17 @@ const QualityControl = () => {
                             Customer and Product Information
                           </h5>
                         </span>
+                        <div className="flex justify-end">
+                        <Button
+                          type="button"
+                          variant="solid"
+                          // color="pink-500
+                          className="bg-pink-500 text-white py-5 text-base mb-4"
+                          onClick={handleOpenPrintDialog}
+                        >
+                          Print & preview
+                        </Button>
+                      </div>
                       </div>
                       <div className="grid grid-cols-3 gap-3">
                         <CustomerInformation
@@ -279,6 +318,13 @@ const QualityControl = () => {
                         onSubmit={handleAddItem}
                       />
 
+                      <PrintReportDialog
+                        isOpen={printDialogOpen}
+                        onClose={() => setPrintDialogOpen(false)}
+                        onDimensionReport={handleDimensionReport}
+                        onVisualReport={handleVisualReport}
+                      />
+
                       <ItemTable
                         initialData={qualityItems}
                         setQualityItems={setQualityItems}
@@ -291,6 +337,13 @@ const QualityControl = () => {
           }}
         </Formik>
       </Suspense>
+      
+      <ReportViewDialog
+        isOpen={reportViewOpen}
+        onClose={() => setReportViewOpen(false)}
+        reportType={reportType}
+        data={reportData}
+      />
     </>
   );
 };

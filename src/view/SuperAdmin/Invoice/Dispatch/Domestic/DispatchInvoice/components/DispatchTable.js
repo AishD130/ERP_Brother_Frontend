@@ -30,6 +30,7 @@ const TableFooterRows = ({
     fright_charges = 0,
     other_charges = 0,
   } = data?.DispatchShippingAndOtherDetail;
+  const otherChargesAmount = parseFloat(other_charges ? other_charges : 0);
   const GST_RATE =
     bill_type === "NON GST" ? 0 : bill_type === "IGST" ? i_gst : c_gst + s_gst;
   const pageQuantity = InvoiceQuantity(pageData);
@@ -46,13 +47,15 @@ const TableFooterRows = ({
     Number(totalAmount) +
       Number(packingAmount) +
       Number(GSTAmount) +
-      fightAmount
+      fightAmount +
+      Number(otherChargesAmount)
   );
   const RoundOff =
     Number(totalAmount) +
     Number(packingAmount) +
     Number(GSTAmount) +
-    fightAmount -
+    fightAmount +
+    Number(otherChargesAmount) -
     GrandTotal;
 
   return (
@@ -253,7 +256,65 @@ const TableFooterRows = ({
               <NumberFormat value={Number(GSTAmount / 2).toFixed(2)} />
             </Td>
           </Tr>
+          {/* Other Charges row (shown after CGST & SGST) */}
+          <Tr
+            style={{
+              border: ".5px solid black",
+              padding: "3px",
+              textAlign: "center",
+            }}
+            className={className}
+          >
+            <Td
+              style={{ border: ".5px solid black", padding: "3px" }}
+              colSpan="5"
+            ></Td>
+            <Td
+              style={{ border: ".5px solid black", padding: "3px" }}
+              colSpan="1"
+              className={className}
+            >
+              OTHER CHARGES
+            </Td>
+            <Td
+              style={{ border: ".5px solid black", padding: "3px" }}
+              colSpan="1"
+            ></Td>
+            <Td style={{ border: ".5px solid black", padding: "3px" }}>
+              <NumberFormat value={otherChargesAmount.toFixed(2)} />
+            </Td>
+          </Tr>
         </>
+      ) : null}
+      {/* If bill type is IGST, show Other Charges after IGST row as well */}
+      {bill_type === "IGST" ? (
+        <Tr
+          style={{
+            border: ".5px solid black",
+            padding: "3px",
+            textAlign: "center",
+          }}
+          className={className}
+        >
+          <Td
+            style={{ border: ".5px solid black", padding: "3px" }}
+            colSpan="5"
+          ></Td>
+          <Td
+            style={{ border: ".5px solid black", padding: "3px" }}
+            colSpan="1"
+            className={className}
+          >
+            OTHER CHARGES
+          </Td>
+          <Td
+            style={{ border: ".5px solid black", padding: "3px" }}
+            colSpan="1"
+          ></Td>
+          <Td style={{ border: ".5px solid black", padding: "3px" }}>
+            <NumberFormat value={otherChargesAmount.toFixed(2)} />
+          </Td>
+        </Tr>
       ) : null}
       <Tr
         style={{
