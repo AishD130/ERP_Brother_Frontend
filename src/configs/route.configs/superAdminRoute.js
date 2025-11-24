@@ -296,6 +296,13 @@ const superAdminRoute = [
   },
 
   {
+    key: "mtc",
+    path: `/master/mtc`,
+    component: React.lazy(() => import("../../view/SuperAdmin/MTC")),
+    authority: [SUPER_ADMIN, ADMIN, SUB_ADMIN, EXECUTIVE],
+  },
+
+  {
     key: "quality.form.new",
     path: `/quality/new`,
     component: React.lazy(() => import("../../view/SuperAdmin/QualityControl")),

@@ -34,7 +34,10 @@ const Footer = ({ data }) => {
       >
         <div className="col-span-4 h-full p-2">
           <div className="h-full" style={{ borderRight: "1px dashed black" }}>
-            <Note data={data?.DispatchNote} />
+            <Note 
+              data={data?.DispatchNote} 
+              billType={data?.DispatchShippingAndOtherDetail?.bill_type}
+            />
           </div>
         </div>
         <div className="col-span-2 h-full p-2">

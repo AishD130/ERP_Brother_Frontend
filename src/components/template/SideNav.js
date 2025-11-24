@@ -65,11 +65,59 @@ const SideNav = () => {
     return navMode;
   };
 
+  // Merge static config with API config to ensure MTC is included
+  const mergeNavigationConfig = () => {
+    if (!navigationConfigs || navigationConfigs.length === 0) {
+      return navigationConfig;
+    }
+
+    // Find if MTC already exists in API config
+    const hasMTC = JSON.stringify(navigationConfigs).includes('"key":"mtc"');
+    if (hasMTC) {
+      return navigationConfigs;
+    }
+
+    // Clone the API config to avoid mutation
+    const mergedConfig = JSON.parse(JSON.stringify(navigationConfigs));
+    
+    // Find the "pages" section and "Master PP" item
+    const pagesSection = mergedConfig.find(item => item.key === 'pages');
+    if (pagesSection && pagesSection.subMenu) {
+      const masterPPIndex = pagesSection.subMenu.findIndex(
+        item => item.key === 'master.planner'
+      );
+      
+      if (masterPPIndex !== -1) {
+        // Check if MTC is already there
+        const mtcExists = pagesSection.subMenu.find(item => item.key === 'mtc');
+        if (!mtcExists) {
+          // Insert MTC after Master PP
+          // Use the same authority format as Master PP (strings from constants)
+          const mtcItem = {
+            key: "mtc",
+            path: `/master/mtc`,
+            title: "MTC",
+            translateKey: "nav.mtc",
+            icon: "master",
+            type: "item",
+            authority: ["super-admin", "admin", "sub-admin"],
+            subMenu: [],
+          };
+          pagesSection.subMenu.splice(masterPPIndex + 1, 0, mtcItem);
+        }
+      }
+    }
+
+    return mergedConfig;
+  };
+
+  const finalNavigationTree = mergeNavigationConfig();
+
   const menuContent = (
     <VerticalMenuContent
       navMode={navMode}
       collapsed={sideNavCollapse}
-      navigationTree={navigationConfigs}
+      navigationTree={finalNavigationTree}
       routeKey={currentRouteKey}
       userAuthority={userAuthority}
       direction={direction}

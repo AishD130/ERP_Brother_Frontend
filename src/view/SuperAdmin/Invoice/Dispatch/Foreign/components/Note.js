@@ -1,6 +1,17 @@
 import React from 'react'
 
-const Note = ({ data }) => {
+const Note = ({ data, billType }) => {
+  // Check if condition contains RoDTEP text
+  const condition = data?.condition || '';
+  const hasRoDTEP = condition.includes('I/We, in regard to my/our claim under RoDTEP');
+  
+  // Add the Letter of Undertaking text before RoDTEP only if bill_type is "NON GST"
+  let modifiedCondition = condition;
+  if (hasRoDTEP && billType === 'NON GST') {
+    const letterOfUndertakingText = '<p style="margin-bottom: 5px;"><strong>LETTER OF UNDERTAKING ARN: AD270425013827Z</strong></p><p style="margin-bottom: 5px;"><strong>SUPPLY MEANT FOR EXPORT UNDER LETTER OF UNDERTAKING WITHOUT PAYMENT OF IGST.</strong></p>';
+    modifiedCondition = letterOfUndertakingText + condition;
+  }
+
   return (
     <div className="h-full flex flex-col print:text-sm">
       <p className="flex break-words font-semibold text-gray-600 mb-1 print:text-sm">
@@ -8,7 +19,7 @@ const Note = ({ data }) => {
       </p>
       <div
         className="flex flex-col break-words print:text-sm"
-        dangerouslySetInnerHTML={{ __html: data?.condition }}
+        dangerouslySetInnerHTML={{ __html: modifiedCondition }}
       ></div>
       {/* <p className='flex break-words print:text-sm'>
                 I/We, in regard to my/our claim under RoDTEP scheme made in this Shipping Bill or Bill of Export, hereby declare that:

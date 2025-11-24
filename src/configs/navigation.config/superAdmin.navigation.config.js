@@ -263,6 +263,17 @@ const superAdminNavigationConfig = [
       },
 
       {
+        key: "mtc",
+        path: `/master/mtc`,
+        title: "MTC",
+        translateKey: "nav.mtc",
+        icon: "master",
+        type: "item",
+        authority: [SUPER_ADMIN, ADMIN, SUB_ADMIN],
+        subMenu: [],
+      },
+
+      {
         key: "quality.control",
         path: "",
         title: "Quality Control",
