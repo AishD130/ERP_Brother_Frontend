@@ -37,6 +37,7 @@ const Footer = ({ data }) => {
             <Note 
               data={data?.DispatchNote} 
               billType={data?.DispatchShippingAndOtherDetail?.bill_type}
+              lutNo={data?.DispatchShippingAndOtherDetail?.lut_no}
             />
           </div>
         </div>

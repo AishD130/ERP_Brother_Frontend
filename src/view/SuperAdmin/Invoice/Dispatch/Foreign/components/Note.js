@@ -1,14 +1,14 @@
 import React from 'react'
 
-const Note = ({ data, billType }) => {
+const Note = ({ data, billType, lutNo }) => {
   // Check if condition contains RoDTEP text
   const condition = data?.condition || '';
   const hasRoDTEP = condition.includes('I/We, in regard to my/our claim under RoDTEP');
   
-  // Add the Letter of Undertaking text before RoDTEP only if bill_type is "NON GST"
+  // Add the Letter of Undertaking text before RoDTEP only if bill_type is "NON GST" and LUT number is provided
   let modifiedCondition = condition;
-  if (hasRoDTEP && billType === 'NON GST') {
-    const letterOfUndertakingText = '<p style="margin-bottom: 5px;"><strong>LETTER OF UNDERTAKING ARN: AD270425013827Z</strong></p><p style="margin-bottom: 5px;"><strong>SUPPLY MEANT FOR EXPORT UNDER LETTER OF UNDERTAKING WITHOUT PAYMENT OF IGST.</strong></p>';
+  if (hasRoDTEP && billType === 'NON GST' && lutNo) {
+    const letterOfUndertakingText = `<p style="margin-bottom: 5px;"><strong>LETTER OF UNDERTAKING ARN: ${lutNo}</strong></p><p style="margin-bottom: 5px;"><strong>SUPPLY MEANT FOR EXPORT UNDER LETTER OF UNDERTAKING WITHOUT PAYMENT OF IGST.</strong></p>`;
     modifiedCondition = letterOfUndertakingText + condition;
   }
 

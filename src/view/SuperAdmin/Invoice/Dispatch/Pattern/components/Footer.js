@@ -42,8 +42,13 @@ const Footer = ({ data }) => {
           Declaration : We declare that this invoice shows the actual price of
           goodS described and that all particulars are true and correct.
           <br />
-          # Letter of Undertaking ARN = AD2704240256461
-          <br />
+          {data?.DispatchShippingAndOtherDetail?.bill_type === 'NON GST' && 
+           data?.DispatchShippingAndOtherDetail?.lut_no && (
+            <>
+              # Letter of Undertaking ARN = {data?.DispatchShippingAndOtherDetail?.lut_no}
+              <br />
+            </>
+          )}
           # I/We, in regard to my/our claim under RoDTEP scheme made in this
           Shipping Bill or Bill of Export, hereby declare that: 1. I/ We
           undertake to abide by the provisions, including conditions,
@@ -58,7 +63,7 @@ const Footer = ({ data }) => {
           3. I/We undertake to preserve and make available relevant documents
           relating to the exported goods for the purposes of audit in the manner
           and for the time period prescribed in the Customs Audit Regulations,
-          2018.”
+          2018."
         </small>
       </div>
       <div

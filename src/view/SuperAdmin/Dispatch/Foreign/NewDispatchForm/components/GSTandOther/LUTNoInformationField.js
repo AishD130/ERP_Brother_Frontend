@@ -18,7 +18,7 @@ const LUTNoInformationField = (props) => {
             <Field
                 component={Input}
                 name='DispatchShippingAndOtherDetails.lut_no'
-                placeholder='ARN - AD2704250138272'
+                placeholder='ARN - Example : AD2704250138272'
             />
         </FormItem>
     )
