@@ -36,6 +36,24 @@ export const initialFilterData = {
     status: ''
 }
 
+// Helper function to sort drawings by revision_number alphabetically
+const sortDrawingsByRevisionNumber = (drawingList) => {
+    if (!drawingList || !drawingList.Drawings || !Array.isArray(drawingList.Drawings)) {
+        return drawingList
+    }
+    
+    const sortedDrawings = [...drawingList.Drawings].sort((a, b) => {
+        const revA = (a.revision_number || '').toString().toUpperCase()
+        const revB = (b.revision_number || '').toString().toUpperCase()
+        return revA.localeCompare(revB)
+    })
+    
+    return {
+        ...drawingList,
+        Drawings: sortedDrawings
+    }
+}
+
 const dataSlice = createSlice({
     name: 'product/details/data',
     initialState: {
@@ -49,7 +67,7 @@ const dataSlice = createSlice({
             state.tableData = action.payload
         },
         setDrawingList: (state, action) => {
-            state.drawingList = action.payload
+            state.drawingList = sortDrawingsByRevisionNumber(action.payload)
         },
         setFilterData: (state, action) => {
             state.filterData = action.payload
@@ -57,7 +75,8 @@ const dataSlice = createSlice({
     },
     extraReducers: {
         [getAllDrawingsByProductId.fulfilled]: (state, action) => {
-            state.drawingList = action.payload.data?.data || []
+            const rawData = action.payload.data?.data || []
+            state.drawingList = sortDrawingsByRevisionNumber(rawData)
             state.loading = false
         },
         [getAllDrawingsByProductId.pending]: (state, action) => {
@@ -65,10 +84,11 @@ const dataSlice = createSlice({
         },
         [deleteDrawingByDrawingId.fulfilled]: (state, action) => {
             if (action.payload?.status === 200) {
-                state.drawingList = {
+                const updatedDrawingList = {
                     ...state.drawingList,
                     Drawings: state.drawingList?.Drawings?.filter(drawing => drawing?.drawing_id !== action.meta.arg?.drawing_id)
                 }
+                state.drawingList = sortDrawingsByRevisionNumber(updatedDrawingList)
             }
         }
     },
